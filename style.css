@@ -232,3 +232,7 @@ body.dark-theme .theme-toggle-btn::after {
 .theme-toggle-btn:hover {
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
+
+#resultContent {
+    color: var(--text-primary);
+}
