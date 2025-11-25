@@ -16,18 +16,39 @@ class GraphVisualizer {
         if (this.graph) this.drawGraph();
     }
 
-    generatePositions(vertices) {
+    generatePositions(vertices, customPositions = null) {
         this.positions = [];
         const centerX = this.canvas.width / 2;
         const centerY = this.canvas.height / 2;
-        const radius = Math.min(this.canvas.width, this.canvas.height) / 3.5;
 
-        for (let i = 0; i < vertices; i++) {
-            const angle = (i / vertices) * 2 * Math.PI - Math.PI / 2;
-            this.positions.push({
-                x: centerX + radius * Math.cos(angle),
-                y: centerY + radius * Math.sin(angle)
-            });
+        if (customPositions) {
+            // Use custom positions (relative to canvas size)
+            for (let i = 0; i < vertices; i++) {
+                if (customPositions[i]) {
+                    this.positions.push({
+                        x: centerX + customPositions[i].x * (this.canvas.width / 1200),
+                        y: centerY + customPositions[i].y * (this.canvas.height / 800)
+                    });
+                } else {
+                    // Fallback to polygon if position not defined
+                    const radius = Math.min(this.canvas.width, this.canvas.height) / 3.5;
+                    const angle = (i / vertices) * 2 * Math.PI - Math.PI / 2;
+                    this.positions.push({
+                        x: centerX + radius * Math.cos(angle),
+                        y: centerY + radius * Math.sin(angle)
+                    });
+                }
+            }
+        } else {
+            // Default polygon layout
+            const radius = Math.min(this.canvas.width, this.canvas.height) / 3.5;
+            for (let i = 0; i < vertices; i++) {
+                const angle = (i / vertices) * 2 * Math.PI - Math.PI / 2;
+                this.positions.push({
+                    x: centerX + radius * Math.cos(angle),
+                    y: centerY + radius * Math.sin(angle)
+                });
+            }
         }
     }
 
@@ -317,7 +338,7 @@ const app = {
         this.currentGraphKey = graphKey;
 
         this.graph = new Graph(graphData.vertices);
-        this.visualizer.generatePositions(graphData.vertices);
+        this.visualizer.generatePositions(graphData.vertices, graphData.positions);
 
         for (let edge of graphData.edges) {
             this.graph.addEdge(edge.u, edge.v, edge.weight);
