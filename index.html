@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Algorithm Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="theme-toggle-btn" onclick="app.toggleTheme()"></div>
+        
+        <div class="control-panel-top-left">
+            <div class="control-section">
+                <h3>Select Graph</h3>
+                <select id="graphList" onchange="app.onGraphSelect()">
+                    <option value="">-- Select Graph --</option>
+                    <option value="graph1">Graph 1</option>
+                    <option value="graph2">Graph 2</option>
+                    <option value="graph3">Graph 3</option>
+                    <option value="graph4">Graph 4</option>
+                    <option value="custom">Custom Graph</option>
+                </select>
+                
+                <div id="customGraphDiv" style="display:none; margin-top: 10px;">
+                    <button onclick="app.addPoint()" style="width: 100%; padding: 6px; margin-bottom: 8px;">+ Add Point</button>
+                    
+                    <h4 style="font-size: 0.85em; margin: 10px 0 5px; color: var(--text-secondary);">Connect Points:</h4>
+                    <select id="fromPoint" style="width: 100%; margin-bottom: 5px; font-size: 0.85em;">
+                        <option value="">From Point</option>
+                    </select>
+                    <select id="toPoint" style="width: 100%; margin-bottom: 5px; font-size: 0.85em;">
+                        <option value="">To Point</option>
+                    </select>
+                    <input type="number" id="edgeWeight" min="1" value="1" placeholder="Weight" style="width: 100%; margin-bottom: 5px; font-size: 0.85em;">
+                    <button onclick="app.addEdge()" style="width: 100%; padding: 6px; margin-bottom: 8px; font-size: 0.85em;">Connect</button>
+                    
+                    <button onclick="app.finishCustomMode()" style="width: 100%; padding: 6px; background: var(--button-clear); font-size: 0.85em;">Done</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h3>Select Algorithm</h3>
+                <select id="algorithmList" onchange="app.updateAlgorithmOptions()">
+                    <option value="">-- Select Algorithm --</option>
+                    <option value="dfs">DFS Spanning Tree</option>
+                    <option value="bfs">BFS Spanning Tree</option>
+                    <option value="dijkstra">Dijkstra's Shortest Path</option>
+                    <option value="prim">Prim's MST</option>
+                    <option value="kruskal">Kruskal's MST</option>
+                </select>
+                
+                <div id="algorithmOptions"></div>
+                
+                <button onclick="app.runAlgorithm()" style="width: 100%; padding: 6px; margin-top: 10px;">Run</button>
+                <button class="clear-btn" onclick="app.clearVisualization()" style="width: 100%; padding: 6px; margin-top: 5px;">Clear</button>
+            </div>
+        </div>
+        
+        <canvas id="graphCanvas"></canvas>
+    </div>
+    
+    <script src="graph.js"></script>
+    <script src="algorithms.js"></script>
+    <script src="graphs-data.js"></script>
+    <script src="visualizer.js"></script>
+</body>
+</html>

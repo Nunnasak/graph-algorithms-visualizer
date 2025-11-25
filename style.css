@@ -1,0 +1,204 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-primary: #f5f5f5;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #fafafa;
+    --text-primary: #333333;
+    --text-secondary: #555555;
+    --text-tertiary: #666666;
+    --border-color: #cccccc;
+    --border-light: #e0e0e0;
+    --button-bg: #333333;
+    --button-hover: #555555;
+    --button-active: #222222;
+    --button-clear: #666666;
+    --button-clear-hover: #888888;
+    --canvas-bg: #ffffff;
+    --edge-normal: #cccccc;
+    --edge-highlight: #333333;
+    --vertex-normal: #cccccc;
+    --vertex-highlight: #333333;
+    --weight-text: #555555;
+}
+
+body.dark-theme {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #3a3a3a;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-tertiary: #a0a0a0;
+    --border-color: #444444;
+    --border-light: #3a3a3a;
+    --button-bg: #444444;
+    --button-hover: #555555;
+    --button-active: #666666;
+    --button-clear: #555555;
+    --button-clear-hover: #666666;
+    --canvas-bg: #1a1a1a;
+    --edge-normal: #666666;
+    --edge-highlight: #cccccc;
+    --vertex-normal: #666666;
+    --vertex-highlight: #cccccc;
+    --weight-text: #b0b0b0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-primary);
+    overflow: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.app-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.control-panel-top-left {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 280px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 15px;
+    z-index: 100;
+    max-height: 70vh;
+    overflow-y: auto;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.control-section {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.control-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+h3 {
+    color: var(--text-secondary);
+    font-size: 0.95em;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+label {
+    display: block;
+    margin: 8px 0 4px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 6px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.85em;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+select {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    cursor: pointer;
+}
+
+textarea {
+    resize: none;
+    font-size: 0.8em;
+}
+
+button {
+    background: var(--button-bg);
+    color: #ffffff;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85em;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+button:hover {
+    background: var(--button-hover);
+}
+
+button:active {
+    background: var(--button-active);
+}
+
+.clear-btn {
+    background: var(--button-clear);
+}
+
+.clear-btn:hover {
+    background: var(--button-clear-hover);
+}
+
+#graphCanvas {
+    flex: 1;
+    background: var(--canvas-bg);
+    display: block;
+    cursor: crosshair;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle-btn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 24px;
+    background: var(--button-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    z-index: 101;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    padding: 0 2px;
+}
+
+.theme-toggle-btn::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    background: var(--bg-secondary);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translateX(0);
+}
+
+body.dark-theme .theme-toggle-btn::after {
+    transform: translateX(16px);
+}
+
+.theme-toggle-btn:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
