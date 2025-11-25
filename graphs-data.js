@@ -128,5 +128,22 @@ const FIXED_GRAPHS = {
             { x: -150, y: 80 },    // 7
             { x: 0, y: 0 }         // 8
         ]
+    },
+    graph6: {
+        name: 'Prim vs Kruskal Demo',
+        vertices: 4,
+        edges: [
+            { u: 0, v: 1, weight: 1 },
+            { u: 0, v: 2, weight: 1 },
+            { u: 1, v: 2, weight: 1 },
+            { u: 2, v: 3, weight: 2 },
+            { u: 1, v: 3, weight: 2 }
+        ],
+        positions: [
+            { x: -150, y: -80 },   // 0
+            { x: -150, y: 80 },    // 1
+            { x: 150, y: -80 },    // 2
+            { x: 150, y: 80 }      // 3
+        ]
     }
 };
