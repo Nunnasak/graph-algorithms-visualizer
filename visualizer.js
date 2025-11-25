@@ -215,7 +215,7 @@ class GraphVisualizer {
         this.ctx.font = 'bold 14px Arial';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(vertex, pos.x, pos.y);
+        this.ctx.fillText(vertex + 1, pos.x, pos.y);
     }
 
     highlightPath(vertices, edges = []) {
@@ -239,7 +239,7 @@ const app = {
     customBuilder: {
         active: false,
         points: [],
-        nextPointId: 0
+        nextPointId: 1
     },
 
     init() {
@@ -250,7 +250,7 @@ const app = {
     startCustomMode() {
         this.customBuilder.active = true;
         this.customBuilder.points = [];
-        this.customBuilder.nextPointId = 0;
+        this.customBuilder.nextPointId = 1;
 
         this.graph = new Graph(0);
         this.visualizer.graph = this.graph;
@@ -271,7 +271,6 @@ const app = {
         const y = centerY + radius * Math.sin(angle);
 
         this.customBuilder.points.push({
-            id: this.customBuilder.nextPointId,
             x: x,
             y: y
         });
@@ -315,15 +314,15 @@ const app = {
         fromSelect.innerHTML = '<option value="">From Point</option>';
         toSelect.innerHTML = '<option value="">To Point</option>';
 
-        this.customBuilder.points.forEach(point => {
+        this.customBuilder.points.forEach((point, index) => {
             const optionFrom = document.createElement('option');
-            optionFrom.value = point.id;
-            optionFrom.textContent = `Point ${point.id}`;
+            optionFrom.value = index;
+            optionFrom.textContent = `Point ${index + 1}`;
             fromSelect.appendChild(optionFrom);
 
             const optionTo = document.createElement('option');
-            optionTo.value = point.id;
-            optionTo.textContent = `Point ${point.id}`;
+            optionTo.value = index;
+            optionTo.textContent = `Point ${index + 1}`;
             toSelect.appendChild(optionTo);
         });
     },
@@ -436,19 +435,19 @@ const app = {
         if (algo === 'dfs' || algo === 'bfs') {
             optionsDiv.innerHTML = `
                 <label>Start Vertex:</label>
-                <input type="number" id="startVertex" min="0" value="0">
+                <input type="number" id="startVertex" min="1" value="1">
             `;
         } else if (algo === 'dijkstra') {
             optionsDiv.innerHTML = `
                 <label>Source Vertex:</label>
-                <input type="number" id="sourceVertex" min="0" value="0">
+                <input type="number" id="sourceVertex" min="1" value="1">
                 <label>Destination Vertex:</label>
-                <input type="number" id="destVertex" min="0" value="0">
+                <input type="number" id="destVertex" min="1" value="1">
             `;
         } else if (algo === 'prim') {
             optionsDiv.innerHTML = `
                 <label>Start Vertex:</label>
-                <input type="number" id="primStartVertex" min="0" value="0">
+                <input type="number" id="primStartVertex" min="1" value="1">
             `;
         }
     },
@@ -470,22 +469,24 @@ const app = {
     },
 
     runDFS() {
-        const start = parseInt(document.getElementById('startVertex').value);
+        const start = parseInt(document.getElementById('startVertex').value) - 1;
         const result = GraphAlgorithms.dfsSpanningTree(this.graph, start);
         this.visualizer.highlightPath(result.visitedOrder, result.spanningTree);
-        this.displayResult(`DFS Spanning Tree<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.spanningTree.length}`);
+        const displayPath = result.visitedOrder.map(v => v + 1).join(' → ');
+        this.displayResult(`DFS Spanning Tree<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.spanningTree.length}<br>Path: ${displayPath}`);
     },
 
     runBFS() {
-        const start = parseInt(document.getElementById('startVertex').value);
+        const start = parseInt(document.getElementById('startVertex').value) - 1;
         const result = GraphAlgorithms.bfsSpanningTree(this.graph, start);
         this.visualizer.highlightPath(result.visitedOrder, result.spanningTree);
-        this.displayResult(`BFS Spanning Tree<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.spanningTree.length}`);
+        const displayPath = result.visitedOrder.map(v => v + 1).join(' → ');
+        this.displayResult(`BFS Spanning Tree<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.spanningTree.length}<br>Path: ${displayPath}`);
     },
 
     runDijkstra() {
-        const source = parseInt(document.getElementById('sourceVertex').value);
-        const destination = parseInt(document.getElementById('destVertex').value);
+        const source = parseInt(document.getElementById('sourceVertex').value) - 1;
+        const destination = parseInt(document.getElementById('destVertex').value) - 1;
         const result = GraphAlgorithms.dijkstra(this.graph, source, destination);
 
         const edges = [];
@@ -496,23 +497,26 @@ const app = {
         if (result.distance === Infinity) {
             this.displayResult(`Dijkstra's Shortest Path<br><strong>No path found</strong>`);
         } else {
-            this.displayResult(`Dijkstra's Shortest Path<br>Total Distance: <strong>${result.distance}</strong><br>Path: ${result.path.join(' → ')}`);
+            const displayPath = result.path.map(v => v + 1).join(' → ');
+            this.displayResult(`Dijkstra's Shortest Path<br>Total Distance: <strong>${result.distance}</strong><br>Path: ${displayPath}`);
         }
     },
 
     runPrim() {
-        const start = parseInt(document.getElementById('primStartVertex').value);
+        const start = parseInt(document.getElementById('primStartVertex').value) - 1;
         const result = GraphAlgorithms.prim(this.graph, start);
         const vertices = this.getVerticesFromEdges(result.mstEdges);
         this.visualizer.highlightPath(vertices, result.mstEdges);
-        this.displayResult(`Prim's MST<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.mstEdges.length}`);
+        const edgePath = result.mstEdges.map(e => `(${e.u + 1}-${e.v + 1})`).join(' → ');
+        this.displayResult(`Prim's MST<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.mstEdges.length}<br>Path: ${edgePath}`);
     },
 
     runKruskal() {
         const result = GraphAlgorithms.kruskal(this.graph);
         const vertices = this.getVerticesFromEdges(result.mstEdges);
         this.visualizer.highlightPath(vertices, result.mstEdges);
-        this.displayResult(`Kruskal's MST<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.mstEdges.length}`);
+        const edgePath = result.mstEdges.map(e => `(${e.u + 1}-${e.v + 1})`).join(' → ');
+        this.displayResult(`Kruskal's MST<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.mstEdges.length}<br>Path: ${edgePath}`);
     },
 
     getVerticesFromEdges(edges) {
@@ -549,7 +553,7 @@ const app = {
         
         this.customBuilder.active = false;
         this.customBuilder.points = [];
-        this.customBuilder.nextPointId = 0;
+        this.customBuilder.nextPointId = 1;
         
         this.visualizer.ctx.clearRect(0, 0, this.visualizer.canvas.width, this.visualizer.canvas.height);
     }

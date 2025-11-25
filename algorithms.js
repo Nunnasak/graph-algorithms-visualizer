@@ -1,11 +1,13 @@
 class GraphAlgorithms {
     // DFS Spanning Tree
     static dfsSpanningTree(graph, startVertex) {
+        // เตรียมตัวแปรสำหรับเก็บข้อมูล
         const visited = new Array(graph.getVertices()).fill(false);
         const spanningTree = [];
         const visitedOrder = [];
         let totalWeight = 0;
 
+        // ฟังก์ชันสำหรับท่องกราฟแบบลึก (Depth-First)
         const dfs = (vertex) => {
             visited[vertex] = true;
             visitedOrder.push(vertex);
@@ -26,6 +28,7 @@ class GraphAlgorithms {
 
     // BFS Spanning Tree
     static bfsSpanningTree(graph, startVertex) {
+        // เตรียมตัวแปรและคิวสำหรับท่องกราฟแบบกว้าง (Breadth-First)
         const visited = new Array(graph.getVertices()).fill(false);
         const spanningTree = [];
         const visitedOrder = [];
@@ -33,6 +36,7 @@ class GraphAlgorithms {
         visited[startVertex] = true;
         let totalWeight = 0;
 
+        // ลูปประมวลผลโหนดในคิวจนกว่าจะหมด
         while (queue.length > 0) {
             const vertex = queue.shift();
             visitedOrder.push(vertex);
@@ -53,13 +57,14 @@ class GraphAlgorithms {
 
     // Dijkstra's Shortest Path
     static dijkstra(graph, source, destination) {
+        // เตรียมตัวแปรสำหรับเก็บระยะทางและเส้นทาง
         const vertices = graph.getVertices();
         const distances = new Array(vertices).fill(Infinity);
         const previous = new Array(vertices).fill(null);
         const visited = new Array(vertices).fill(false);
-
         distances[source] = 0;
 
+        // หาเส้นทางที่สั้นที่สุดโดยเลือกโหนดที่มีระยะทางน้อยที่สุดในแต่ละรอบ
         for (let i = 0; i < vertices - 1; i++) {
             let minVertex = -1;
             let minDistance = Infinity;
@@ -74,6 +79,7 @@ class GraphAlgorithms {
             if (minVertex === -1) break;
             visited[minVertex] = true;
 
+            // อัพเดทระยะทางของโหนดข้างเคียง
             const adjacent = graph.getAdjacent(minVertex);
             for (let edge of adjacent) {
                 if (!visited[edge.vertex]) {
@@ -86,7 +92,7 @@ class GraphAlgorithms {
             }
         }
 
-        // Reconstruct path
+        // สร้างเส้นทางจากปลายทางย้อนกลับไปต้นทาง
         const path = [];
         let current = destination;
         while (current !== null) {
@@ -103,13 +109,14 @@ class GraphAlgorithms {
 
     // Prim's Minimum Spanning Tree
     static prim(graph) {
+        // เตรียมตัวแปรสำหรับสร้าง MST
         const vertices = graph.getVertices();
         const inMST = new Array(vertices).fill(false);
         const mstEdges = [];
         let totalWeight = 0;
-
         inMST[0] = true;
 
+        // เลือกขอบที่มีน้ำหนักน้อยที่สุดที่เชื่อม MST กับโหนดนอก MST ทีละขอบ
         for (let count = 0; count < vertices - 1; count++) {
             let minWeight = Infinity;
             let u = -1, v = -1;
@@ -139,9 +146,11 @@ class GraphAlgorithms {
 
     // Kruskal's Minimum Spanning Tree
     static kruskal(graph) {
+        // เรียงลำดับขอบตามน้ำหนักจากน้อยไปมาก
         const edges = graph.getEdges().map(e => ({ ...e }));
         edges.sort((a, b) => a.weight - b.weight);
 
+        // เตรียม Union-Find สำหรับตรวจสอบ cycle
         const parent = Array.from({ length: graph.getVertices() }, (_, i) => i);
 
         const find = (x) => {
@@ -161,6 +170,7 @@ class GraphAlgorithms {
             return false;
         };
 
+        // เลือกขอบที่เบาที่สุดทีละขอบโดยไม่ให้เกิด cycle
         const mstEdges = [];
         let totalWeight = 0;
 
