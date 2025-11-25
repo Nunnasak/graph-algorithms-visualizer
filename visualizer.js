@@ -6,14 +6,86 @@ class GraphVisualizer {
         this.positions = [];
         this.highlightedEdges = [];
         this.highlightedVertices = [];
+        this.scale = 1;
+        this.panX = 0;
+        this.panY = 0;
+        this.isDragging = false;
+        this.dragStartX = 0;
+        this.dragStartY = 0;
         this.resizeCanvas();
         window.addEventListener('resize', () => this.resizeCanvas());
+        this.setupZoomAndPan();
     }
 
     resizeCanvas() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight - 70;
         if (this.graph) this.drawGraph();
+    }
+
+    setupZoomAndPan() {
+        // Mouse wheel zoom
+        this.canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const rect = this.canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            const zoom = e.deltaY < 0 ? 1.1 : 0.9;
+            const newScale = Math.max(0.1, Math.min(5, this.scale * zoom));
+            
+            // Zoom toward mouse position
+            this.panX = mouseX - (mouseX - this.panX) * (newScale / this.scale);
+            this.panY = mouseY - (mouseY - this.panY) * (newScale / this.scale);
+            this.scale = newScale;
+            
+            this.drawGraph();
+        });
+
+        // Mouse drag to pan
+        this.canvas.addEventListener('mousedown', (e) => {
+            this.isDragging = true;
+            this.dragStartX = e.clientX - this.panX;
+            this.dragStartY = e.clientY - this.panY;
+            this.canvas.style.cursor = 'grabbing';
+        });
+
+        this.canvas.addEventListener('mousemove', (e) => {
+            if (this.isDragging) {
+                this.panX = e.clientX - this.dragStartX;
+                this.panY = e.clientY - this.dragStartY;
+                this.drawGraph();
+            }
+        });
+
+        this.canvas.addEventListener('mouseup', () => {
+            this.isDragging = false;
+            this.canvas.style.cursor = 'grab';
+        });
+
+        this.canvas.addEventListener('mouseleave', () => {
+            this.isDragging = false;
+            this.canvas.style.cursor = 'grab';
+        });
+
+        this.canvas.style.cursor = 'grab';
+    }
+
+    resetView() {
+        this.scale = 1;
+        this.panX = 0;
+        this.panY = 0;
+        this.drawGraph();
+    }
+
+    zoomIn() {
+        this.scale = Math.min(5, this.scale * 1.2);
+        this.drawGraph();
+    }
+
+    zoomOut() {
+        this.scale = Math.max(0.1, this.scale / 1.2);
+        this.drawGraph();
     }
 
     generatePositions(vertices, customPositions = null) {
@@ -66,6 +138,12 @@ class GraphVisualizer {
 
     drawGraph() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.save();
+        
+        // Apply pan and zoom transformations
+        this.ctx.translate(this.panX, this.panY);
+        this.ctx.scale(this.scale, this.scale);
+        
         const colors = this.getColors();
 
         // Draw edges
@@ -83,6 +161,8 @@ class GraphVisualizer {
             const highlighted = this.highlightedVertices.includes(i);
             this.drawVertex(i, highlighted, colors);
         }
+        
+        this.ctx.restore();
     }
 
     drawCustomMode() {
