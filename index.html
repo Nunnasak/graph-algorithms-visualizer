@@ -55,6 +55,11 @@
                 <button onclick="app.runAlgorithm()" style="width: 100%; padding: 6px; margin-top: 10px;">Run</button>
                 <button class="clear-btn" onclick="app.clearVisualization()" style="width: 100%; padding: 6px; margin-top: 5px;">Clear</button>
             </div>
+            
+            <div class="control-section" id="resultDisplay" style="display: none;">
+                <h3>Result</h3>
+                <div id="resultContent" style="padding: 10px; background: var(--bg-secondary); border-radius: 4px; font-size: 0.9em;"></div>
+            </div>
         </div>
         
         <canvas id="graphCanvas"></canvas>

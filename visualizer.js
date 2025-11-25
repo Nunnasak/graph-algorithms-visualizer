@@ -372,12 +372,14 @@ const app = {
         const start = parseInt(document.getElementById('startVertex').value);
         const result = GraphAlgorithms.dfsSpanningTree(this.graph, start);
         this.visualizer.highlightPath(result.visitedOrder, result.spanningTree);
+        this.displayResult(`DFS Spanning Tree<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.spanningTree.length}`);
     },
 
     runBFS() {
         const start = parseInt(document.getElementById('startVertex').value);
         const result = GraphAlgorithms.bfsSpanningTree(this.graph, start);
         this.visualizer.highlightPath(result.visitedOrder, result.spanningTree);
+        this.displayResult(`BFS Spanning Tree<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.spanningTree.length}`);
     },
 
     runDijkstra() {
@@ -390,17 +392,35 @@ const app = {
             edges.push({ u: result.path[i], v: result.path[i + 1] });
         }
         this.visualizer.highlightPath(result.path, edges);
+        if (result.distance === Infinity) {
+            this.displayResult(`Dijkstra's Shortest Path<br><strong>No path found</strong>`);
+        } else {
+            this.displayResult(`Dijkstra's Shortest Path<br>Total Distance: <strong>${result.distance}</strong><br>Path: ${result.path.join(' → ')}`);
+        }
     },
 
     runPrim() {
         const start = parseInt(document.getElementById('primStartVertex').value);
         const result = GraphAlgorithms.prim(this.graph, start);
         this.visualizer.highlightPath([], result.mstEdges);
+        this.displayResult(`Prim's MST<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.mstEdges.length}`);
     },
 
     runKruskal() {
         const result = GraphAlgorithms.kruskal(this.graph);
         this.visualizer.highlightPath([], result.mstEdges);
+        this.displayResult(`Kruskal's MST<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.mstEdges.length}`);
+    },
+
+    displayResult(content) {
+        const resultDisplay = document.getElementById('resultDisplay');
+        const resultContent = document.getElementById('resultContent');
+        resultDisplay.style.display = 'block';
+        resultContent.innerHTML = content;
+    },
+
+    hideResult() {
+        document.getElementById('resultDisplay').style.display = 'none';
     },
 
     clearVisualization() {
@@ -408,6 +428,7 @@ const app = {
         document.getElementById('customGraphDiv').style.display = 'none';
         document.getElementById('algorithmList').value = '';
         document.getElementById('algorithmOptions').innerHTML = '';
+        this.hideResult();
         
         this.graph = null;
         this.visualizer.positions = [];

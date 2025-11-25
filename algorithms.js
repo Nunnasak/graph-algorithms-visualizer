@@ -4,6 +4,7 @@ class GraphAlgorithms {
         const visited = new Array(graph.getVertices()).fill(false);
         const spanningTree = [];
         const visitedOrder = [];
+        let totalWeight = 0;
 
         const dfs = (vertex) => {
             visited[vertex] = true;
@@ -12,14 +13,15 @@ class GraphAlgorithms {
             const adjacent = graph.getAdjacent(vertex);
             for (let edge of adjacent) {
                 if (!visited[edge.vertex]) {
-                    spanningTree.push({ u: vertex, v: edge.vertex });
+                    spanningTree.push({ u: vertex, v: edge.vertex, weight: edge.weight });
+                    totalWeight += edge.weight;
                     dfs(edge.vertex);
                 }
             }
         };
 
         dfs(startVertex);
-        return { spanningTree, visitedOrder };
+        return { spanningTree, visitedOrder, totalWeight };
     }
 
     // BFS Spanning Tree
@@ -29,6 +31,7 @@ class GraphAlgorithms {
         const visitedOrder = [];
         const queue = [startVertex];
         visited[startVertex] = true;
+        let totalWeight = 0;
 
         while (queue.length > 0) {
             const vertex = queue.shift();
@@ -38,13 +41,14 @@ class GraphAlgorithms {
             for (let edge of adjacent) {
                 if (!visited[edge.vertex]) {
                     visited[edge.vertex] = true;
-                    spanningTree.push({ u: vertex, v: edge.vertex });
+                    spanningTree.push({ u: vertex, v: edge.vertex, weight: edge.weight });
+                    totalWeight += edge.weight;
                     queue.push(edge.vertex);
                 }
             }
         }
 
-        return { spanningTree, visitedOrder };
+        return { spanningTree, visitedOrder, totalWeight };
     }
 
     // Dijkstra's Shortest Path
