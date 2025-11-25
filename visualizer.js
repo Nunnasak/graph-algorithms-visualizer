@@ -402,14 +402,25 @@ const app = {
     runPrim() {
         const start = parseInt(document.getElementById('primStartVertex').value);
         const result = GraphAlgorithms.prim(this.graph, start);
-        this.visualizer.highlightPath([], result.mstEdges);
+        const vertices = this.getVerticesFromEdges(result.mstEdges);
+        this.visualizer.highlightPath(vertices, result.mstEdges);
         this.displayResult(`Prim's MST<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.mstEdges.length}`);
     },
 
     runKruskal() {
         const result = GraphAlgorithms.kruskal(this.graph);
-        this.visualizer.highlightPath([], result.mstEdges);
+        const vertices = this.getVerticesFromEdges(result.mstEdges);
+        this.visualizer.highlightPath(vertices, result.mstEdges);
         this.displayResult(`Kruskal's MST<br>Total Weight: <strong>${result.totalWeight}</strong><br>Edges: ${result.mstEdges.length}`);
+    },
+
+    getVerticesFromEdges(edges) {
+        const vertexSet = new Set();
+        for (let edge of edges) {
+            vertexSet.add(edge.u);
+            vertexSet.add(edge.v);
+        }
+        return Array.from(vertexSet);
     },
 
     displayResult(content) {
